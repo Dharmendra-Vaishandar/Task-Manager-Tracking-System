@@ -1,5 +1,6 @@
 package com.taskmanager.task.entity;
 
+import com.taskmanager.project.entity.Project;
 import com.taskmanager.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -42,6 +43,10 @@ public class Task {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     @PrePersist
     public void prePersist() {

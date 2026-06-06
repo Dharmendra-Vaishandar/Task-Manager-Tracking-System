@@ -20,17 +20,11 @@ public class TaskServiceImpl implements TaskService {
     private final UserRepository userRepository;
 
     @Override
-    public TaskResponse create(
-            TaskCreateRequest request
-    ) {
+    public TaskResponse create(TaskCreateRequest request) {
 
         User assignee = null;
-
-        if(request.assigneeId() != null) {
-
-            assignee = userRepository
-                    .findById(request.assigneeId())
-                    .orElseThrow();
+        if (request.assigneeId() != null) {
+            assignee = userRepository.findById(request.assigneeId()).orElseThrow();
         }
 
         Task task = new Task();
@@ -48,28 +42,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse update(
-            Long taskId,
-            TaskUpdateRequest request
-    ) {
+    public TaskResponse update(Long taskId, TaskUpdateRequest request) {
 
-        Task task = taskRepository
-                .findById(taskId)
-                .orElseThrow();
+        Task task = taskRepository.findById(taskId).orElseThrow();
 
-        if(request.title() != null)
+        if (request.title() != null)
             task.setTitle(request.title());
 
-        if(request.description() != null)
+        if (request.description() != null)
             task.setDescription(request.description());
 
-        if(request.status() != null)
+        if (request.status() != null)
             task.setStatus(request.status());
 
-        if(request.priority() != null)
+        if (request.priority() != null)
             task.setPriority(request.priority());
 
-        if(request.dueDate() != null)
+        if (request.dueDate() != null)
             task.setDueDate(request.dueDate());
 
         taskRepository.save(task);
@@ -79,33 +68,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void delete(Long taskId) {
-
         taskRepository.deleteById(taskId);
     }
 
     @Override
     public TaskResponse get(Long taskId) {
 
-        return map(
-                taskRepository
-                        .findById(taskId)
-                        .orElseThrow()
-        );
+        return map(taskRepository.findById(taskId).orElseThrow());
     }
 
     @Override
-    public Page<TaskResponse> search(
-            String keyword,
-            int page,
-            int size
-    ) {
-
-        return taskRepository
-                .findAll(
-                        TaskSpecification.keyword(keyword),
-                        PageRequest.of(page, size)
-                )
-                .map(this::map);
+    public Page<TaskResponse> search(String keyword, int page, int size) {
+        return taskRepository.findAll(TaskSpecification.keyword(keyword), PageRequest.of(page, size)).map(this::map);
     }
 
     private TaskResponse map(Task task) {

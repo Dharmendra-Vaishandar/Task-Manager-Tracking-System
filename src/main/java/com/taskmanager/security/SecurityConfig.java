@@ -47,6 +47,12 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**"
                         ).permitAll()
+                        .requestMatchers(
+                                "/api/v1/teams/**"
+                        ).permitAll()
+                        .requestMatchers(
+                                "/api/v1/tasks/**"
+                        ).permitAll()
                         .anyRequest()
                         .authenticated())
                 .addFilterBefore(
