@@ -7,6 +7,7 @@ import com.taskmanager.task.service.TaskService;
 import com.taskmanager.task.specification.TaskSpecification;
 import com.taskmanager.user.entity.User;
 import com.taskmanager.user.repository.UserRepository;
+import com.taskmanager.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Override
     public TaskResponse create(TaskCreateRequest request) {
@@ -37,6 +39,13 @@ public class TaskServiceImpl implements TaskService {
         task.setAssignee(assignee);
 
         task = taskRepository.save(task);
+
+        if (assignee != null) {
+            notificationService.createNotification(assignee.getId(),
+                    "Task Assigned",
+                    "Task '" + task.getTitle() + "' assigned to you."
+            );
+        }
 
         return map(task);
     }
