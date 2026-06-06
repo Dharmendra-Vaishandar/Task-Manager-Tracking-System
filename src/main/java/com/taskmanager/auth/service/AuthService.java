@@ -6,6 +6,7 @@ import com.taskmanager.auth.dto.RegisterRequest;
 import com.taskmanager.security.JwtService;
 import com.taskmanager.user.entity.Role;
 import com.taskmanager.user.entity.User;
+import com.taskmanager.user.entity.UserStatus;
 import com.taskmanager.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,9 @@ public class AuthService {
                     "Email already exists");
         }
 
+        // Default status to ACTIVE if not provided
+        UserStatus userStatus = request.status() != null ? request.status() : UserStatus.ACTIVE;
+
         User user = User.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
@@ -39,6 +43,8 @@ public class AuthService {
                         encoder.encode(
                                 request.password()))
                 .role(Role.ROLE_USER)
+                .status(userStatus)
+                .emailVerified(false)
                 .build();
 
         userRepository.save(user);
